@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql", // replace with your GraphQL server URL
