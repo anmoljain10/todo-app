@@ -1,7 +1,6 @@
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 import { Container, Row, Col } from "react-bootstrap";
-import "./todoForm.css";
 
 function App() {
   return (
