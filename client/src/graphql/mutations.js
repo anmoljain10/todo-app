@@ -19,4 +19,10 @@ const CREATE_TODO = gql`
   }
 `;
 
-export { CREATE_TODO };
+const REMOVE_TODO = gql`
+  mutation removeTodo($taskId: ID!) {
+    removeTodo(taskId: $taskId)
+  }
+`;
+
+export { CREATE_TODO, REMOVE_TODO };

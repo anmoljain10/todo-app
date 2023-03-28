@@ -29,7 +29,8 @@ const schema = buildSchema(`
         todoList: [TodoItem!]
     }
     type Mutation {
-        createTodo(task:String!, description:String!, isCompleted: Boolean!): TodoItem! 
+        createTodo(task:String!, description:String!, isCompleted: Boolean!): TodoItem!
+        removeTodo(taskId:ID!):ID! 
     }
 `);
 
@@ -42,6 +43,11 @@ const root = {
     let id = String(Math.random() * 4 - 1);
     todo.push({ task, description, isCompleted, id });
     return { task, description, isCompleted, id };
+  },
+  removeTodo: (parent) => {
+    const { taskId } = parent;
+    todo = todo.filter((todoItem) => todoItem.id !== taskId);
+    return taskId;
   },
 };
 
