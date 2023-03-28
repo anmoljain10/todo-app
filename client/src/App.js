@@ -19,8 +19,8 @@ function App() {
           >
             <TodoForm />
           </Col>
-          <Col>
-            <h1>Todos</h1>
+          <Col className="px-5 py-4">
+            <h1 class="mb-3">Todos</h1>
             <TodoList />
           </Col>
         </Row>

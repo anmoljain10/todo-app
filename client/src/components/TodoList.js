@@ -4,6 +4,8 @@ import {
   Placeholder,
   Form,
   CloseButton,
+  Row,
+  Col,
 } from "react-bootstrap";
 import { GET_TODOS } from "../graphql/queries";
 import { useQuery, useMutation } from "@apollo/client";
@@ -35,7 +37,6 @@ function TodoList() {
         <ListGroup>
           {data.todoList.map(({ id, task, description, isCompleted }) => (
             <ListGroupItem key={id}>
-              <h3>{task}</h3> {description}
               <CloseButton
                 variant="red"
                 style={{ position: "absolute", top: 10, right: 10 }}
@@ -43,7 +44,20 @@ function TodoList() {
                   removeTodo({ variables: { taskId: id } });
                 }}
               ></CloseButton>
-              <Form.Check type={"checkbox"} size="lg" checked={isCompleted} />
+              <div class="d-flex align-items-start">
+                <div>
+                  <Form.Check
+                    type={"checkbox"}
+                    size="lg"
+                    variant="success"
+                    className="mt-1"
+                    checked={isCompleted}
+                  />
+                </div>
+                <div class="mx-3">
+                  <h3 class="pt-0 mt-0">{task}</h3> {description}
+                </div>
+              </div>
             </ListGroupItem>
           ))}
         </ListGroup>
