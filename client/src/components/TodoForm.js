@@ -1,26 +1,7 @@
 import { Mutation } from "react-apollo";
-import gql from "graphql-tag";
 import { useState } from "react";
 import { Button, Form, Spinner, Card } from "react-bootstrap";
-
-const CREATE_TODO = gql`
-  mutation createTodo(
-    $task: String!
-    $description: String!
-    $isCompleted: Boolean!
-  ) {
-    createTodo(
-      task: $task
-      description: $description
-      isCompleted: $isCompleted
-    ) {
-      task
-      description
-      isCompleted
-      id
-    }
-  }
-`;
+import { CREATE_TODO } from "../graphql/mutations";
 
 function TodoForm() {
   const [task, setTask] = useState("");
@@ -51,21 +32,25 @@ function TodoForm() {
               }}
             >
               <Form.Label class="text-white fs-2 mt-5 mb-2">
-                <h2> Enter Task</h2>
+                <h3> Enter Task</h3>
               </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Task"
                 value={task}
+                style={{ paddingTop: 10, paddingBottom: 10 }}
                 onChange={(event) => setTask(event.target.value)}
               ></Form.Control>
 
               <Form.Label class="text-white fs-2 mt-5 mb-2">
-                <h2>Enter Description</h2>
+                <h3>Enter Description</h3>
               </Form.Label>
               <Form.Control
                 type="text"
+                style={{ paddingTop: 10, paddingBottom: 10 }}
                 placeholder="Enter Description"
+                as="textarea"
+                row={3}
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
               ></Form.Control>
