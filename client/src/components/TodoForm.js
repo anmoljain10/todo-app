@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Button, Form, Spinner, Card } from "react-bootstrap";
 import { CREATE_TODO } from "../graphql/mutations";
+import { GET_TODOS } from "../graphql/queries";
 import { useMutation } from "@apollo/client";
 
 function TodoForm() {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
-  const [createTodo, { data, loading, error }] = useMutation(CREATE_TODO);
+  const [createTodo, { data, loading, error }] = useMutation(CREATE_TODO, {
+    refetchQueries: [{ query: GET_TODOS }],
+  });
 
   return (
     <>
