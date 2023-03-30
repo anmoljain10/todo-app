@@ -1,6 +1,6 @@
 const express = require("express");
-const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
+const { createHandler } = require("graphql-http/lib/use/express");
 const cors = require("cors");
 
 let todo = [
@@ -69,7 +69,7 @@ app.use(cors());
 
 app.use(
   "/graphql",
-  graphqlHTTP({
+  createHandler({
     schema: schema,
     rootValue: root,
     graphiql: true,
