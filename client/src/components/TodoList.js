@@ -4,12 +4,11 @@ import {
   Placeholder,
   Form,
   CloseButton,
-  Row,
-  Col,
 } from "react-bootstrap";
 import { GET_TODOS } from "../graphql/queries";
 import { useQuery, useMutation } from "@apollo/client";
-import { REMOVE_TODO } from "../graphql/mutations";
+import { REMOVE_TODO, UPDATE_TASK_STATUS } from "../graphql/mutations";
+import { useEffect } from "react";
 
 function TodoList() {
   const placeholderSkeletons = [
@@ -22,6 +21,23 @@ function TodoList() {
   const [removeTodo, removeResponse] = useMutation(REMOVE_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
   });
+  const [updateTaskStatus, updateResponse] = useMutation(UPDATE_TASK_STATUS, {
+    refetchQueries: [{ query: GET_TODOS }],
+  });
+
+  function onSelectionChange(taskId) {
+    console.log(taskId, "task id");
+    updateTaskStatus({ variables: { taskId: taskId } });
+  }
+
+  useEffect(() => {
+    console.log("error deleting task!");
+  }, [removeResponse.error]);
+
+  useEffect(() => {
+    console.log("error updating task!", updateResponse);
+  }, [updateResponse.error]);
+
   return (
     <>
       {loading &&
@@ -35,31 +51,34 @@ function TodoList() {
       {error && <p>Error :(</p>}
       {data && (
         <ListGroup>
-          {data.todoList.map(({ id, task, description, isCompleted }) => (
-            <ListGroupItem key={id}>
-              <CloseButton
-                variant="red"
-                style={{ position: "absolute", top: 10, right: 10 }}
-                onClick={() => {
-                  removeTodo({ variables: { taskId: id } });
-                }}
-              ></CloseButton>
-              <div class="d-flex align-items-start">
-                <div>
-                  <Form.Check
-                    type={"checkbox"}
-                    size="lg"
-                    variant="success"
-                    className="mt-1"
-                    checked={isCompleted}
-                  />
+          {data.todoList.map(
+            ({ id, task, description, isCompleted }, index) => (
+              <ListGroupItem key={id}>
+                <CloseButton
+                  variant="danger"
+                  style={{ position: "absolute", top: 10, right: 10 }}
+                  onClick={() => {
+                    removeTodo({ variables: { taskId: id } });
+                  }}
+                ></CloseButton>
+                <div class="d-flex align-items-start">
+                  <div>
+                    <Form.Check
+                      type={"checkbox"}
+                      size="lg"
+                      variant="success"
+                      className="mt-1"
+                      checked={isCompleted}
+                      onChange={() => onSelectionChange(id)}
+                    />
+                  </div>
+                  <div class="mx-3">
+                    <h3 class="pt-0 mt-0">{task}</h3> {description}
+                  </div>
                 </div>
-                <div class="mx-3">
-                  <h3 class="pt-0 mt-0">{task}</h3> {description}
-                </div>
-              </div>
-            </ListGroupItem>
-          ))}
+              </ListGroupItem>
+            )
+          )}
         </ListGroup>
       )}
     </>

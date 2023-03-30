@@ -13,7 +13,7 @@ let todo = [
   {
     task: "Walk",
     description: "Walk 4 Kms, exercise 20 minutes",
-    isCompleted: true,
+    isCompleted: false,
     id: "aksjdlaskjdlsd",
   },
 ];
@@ -30,7 +30,8 @@ const schema = buildSchema(`
     }
     type Mutation {
         createTodo(task:String!, description:String!, isCompleted: Boolean!): TodoItem!
-        removeTodo(taskId:ID!):ID! 
+        removeTodo(taskId:ID!):ID!
+        updateTaskStatus(taskId:ID!):ID!
     }
 `);
 
@@ -48,6 +49,18 @@ const root = {
     const { taskId } = parent;
     todo = todo.filter((todoItem) => todoItem.id !== taskId);
     return taskId;
+  },
+  updateTaskStatus: (parent) => {
+    try {
+      const { taskId } = parent;
+      const taskIndex = todo.findIndex((task) => task.id === taskId);
+      if (taskId && taskIndex !== -1) {
+        todo[taskIndex].isCompleted = !todo[taskIndex].isCompleted;
+      }
+      return taskId;
+    } catch (e) {
+      console.log(e, "error");
+    }
   },
 };
 
