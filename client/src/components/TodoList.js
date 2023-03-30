@@ -5,10 +5,11 @@ import {
   Form,
   CloseButton,
 } from "react-bootstrap";
+import RemoveTodoModal from "./RemoveTodoModal";
 import { GET_TODOS } from "../graphql/queries";
 import { useQuery, useMutation } from "@apollo/client";
 import { REMOVE_TODO, UPDATE_TASK_STATUS } from "../graphql/mutations";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function TodoList() {
   const placeholderSkeletons = [
@@ -17,6 +18,8 @@ function TodoList() {
     "placeholder 3",
     "placeholder 4",
   ];
+  const [removeTodoModalVisible, setTodoModalVisibility] = useState(false);
+  const [removeTodoId, setRemoveTodoId] = useState(null);
   const { loading, error, data } = useQuery(GET_TODOS);
   const [removeTodo, removeResponse] = useMutation(REMOVE_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
@@ -31,12 +34,24 @@ function TodoList() {
   }
 
   useEffect(() => {
-    console.log("error deleting task!");
-  }, [removeResponse.error]);
+    setRemoveTodoId(null);
+    if (removeResponse.data) {
+      setTodoModalVisibility(false);
+    }
+  }, [removeResponse.error, removeResponse.data]);
 
   useEffect(() => {
     console.log("error updating task!", updateResponse);
   }, [updateResponse.error]);
+
+  function onRemoveConfirm() {
+    if (removeTodoId) {
+      removeTodo({ variables: { taskId: removeTodoId } });
+    }
+  }
+  function onModalClose() {
+    setTodoModalVisibility(false);
+  }
 
   return (
     <>
@@ -48,39 +63,46 @@ function TodoList() {
             </Placeholder>
           );
         })}
-      {error && <p>Error :(</p>}
-      {data && (
+      {error && <p>Error loading Todos :(</p>}
+      {data && data?.todoList.length ? (
         <ListGroup>
-          {data.todoList.map(
-            ({ id, task, description, isCompleted }, index) => (
-              <ListGroupItem key={id}>
-                <CloseButton
-                  variant="danger"
-                  style={{ position: "absolute", top: 10, right: 10 }}
-                  onClick={() => {
-                    removeTodo({ variables: { taskId: id } });
-                  }}
-                ></CloseButton>
-                <div class="d-flex align-items-start">
-                  <div>
-                    <Form.Check
-                      type={"checkbox"}
-                      size="lg"
-                      variant="success"
-                      className="mt-1"
-                      checked={isCompleted}
-                      onChange={() => onSelectionChange(id)}
-                    />
-                  </div>
-                  <div class="mx-3">
-                    <h3 class="pt-0 mt-0">{task}</h3> {description}
-                  </div>
+          {data.todoList.map(({ id, task, description, isCompleted }) => (
+            <ListGroupItem key={id}>
+              <CloseButton
+                variant="danger"
+                style={{ position: "absolute", top: 10, right: 10 }}
+                onClick={() => {
+                  setRemoveTodoId(id);
+                  setTodoModalVisibility(true);
+                }}
+              ></CloseButton>
+              <div class="d-flex align-items-start">
+                <div>
+                  <Form.Check
+                    type={"checkbox"}
+                    size="lg"
+                    variant="success"
+                    className="mt-1"
+                    checked={isCompleted}
+                    onChange={() => onSelectionChange(id)}
+                  />
                 </div>
-              </ListGroupItem>
-            )
-          )}
+                <div class="mx-3">
+                  <h3 class="pt-0 mt-0">{task}</h3> {description}
+                </div>
+              </div>
+            </ListGroupItem>
+          ))}
         </ListGroup>
+      ) : (
+        <p>No Todos available, add Todo. 😴</p>
       )}
+
+      <RemoveTodoModal
+        isVisible={removeTodoModalVisible}
+        onRemove={onRemoveConfirm}
+        closeModal={onModalClose}
+      />
     </>
   );
 }
