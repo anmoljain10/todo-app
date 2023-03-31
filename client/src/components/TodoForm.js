@@ -75,6 +75,7 @@ function TodoForm() {
             </Form.Label>
             <Slider
               max={5}
+              value={sliderValue}
               railStyle={{ height: 15 }}
               trackStyle={{
                 height: 15,
