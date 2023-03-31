@@ -44,6 +44,7 @@ function TodoForm() {
               });
               setTask("");
               setDescription("");
+              setSliderValue(0);
             }}
           >
             <Form.Label class="text-white fs-2 mt-5 mb-2">
