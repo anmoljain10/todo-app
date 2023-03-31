@@ -3,18 +3,25 @@ import { Button, Form, Spinner, Card } from "react-bootstrap";
 import { CREATE_TODO } from "../graphql/mutations";
 import { GET_TODOS } from "../graphql/queries";
 import { useMutation } from "@apollo/client";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 function TodoForm() {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
+  const [sliderValue, setSliderValue] = useState(0);
   const [createTodo, { data, loading, error }] = useMutation(CREATE_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
   });
 
+  function onSliderValueChange(slideValue) {
+    setSliderValue(slideValue);
+  }
+
   return (
     <>
       <div class="mx-5">
-        <h1 style={{ marginTop: "25%", fontWeight: "bold", color: "white" }}>
+        <h1 style={{ marginTop: "20%", fontWeight: "bold", color: "white" }}>
           Add Todo
         </h1>
         <Card
@@ -28,14 +35,19 @@ function TodoForm() {
             onSubmit={(e) => {
               e.preventDefault();
               createTodo({
-                variables: { task, description, isCompleted: false },
+                variables: {
+                  task,
+                  description,
+                  isCompleted: false,
+                  priority: sliderValue,
+                },
               });
               setTask("");
               setDescription("");
             }}
           >
             <Form.Label class="text-white fs-2 mt-5 mb-2">
-              <h3> Enter Task</h3>
+              <h3>Enter Task</h3>
             </Form.Label>
             <Form.Control
               type="text"
@@ -57,6 +69,28 @@ function TodoForm() {
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             ></Form.Control>
+            <Form.Label class="text-white fs-2 mt-5 mb-2">
+              <h3>Select Priority</h3>
+            </Form.Label>
+            <Slider
+              max={5}
+              railStyle={{ height: 15 }}
+              trackStyle={{
+                height: 15,
+                backgroundColor:
+                  sliderValue <= 2
+                    ? "#33ccff"
+                    : sliderValue <= 4
+                    ? "#ffc34d"
+                    : "#ff6666",
+              }}
+              handleStyle={{ height: 25, width: 25 }}
+              onChange={onSliderValueChange}
+            />
+            <h4 class="mt-3 text-white">
+              {sliderValue <= 2 ? "Low" : sliderValue <= 4 ? "Medium" : "High"}
+            </h4>
+
             <div class="mt-5">
               <Button
                 disabled={task === "" || description === "" || loading === true}

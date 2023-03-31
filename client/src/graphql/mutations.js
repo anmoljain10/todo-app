@@ -5,14 +5,17 @@ const CREATE_TODO = gql`
     $task: String!
     $description: String!
     $isCompleted: Boolean!
+    $priority: Int!
   ) {
     createTodo(
       task: $task
       description: $description
       isCompleted: $isCompleted
+      priority: $priority
     ) {
       task
       description
+      priority
       isCompleted
       id
     }

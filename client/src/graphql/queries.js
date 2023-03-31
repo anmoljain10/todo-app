@@ -7,6 +7,7 @@ const GET_TODOS = gql`
       description
       isCompleted
       id
+      priority
     }
   }
 `;

@@ -9,12 +9,14 @@ let todo = [
     description: "Zig zag strokes, floss, clean tongue",
     isCompleted: false,
     id: "alsdkjalsjd;lad",
+    priority: 5,
   },
   {
     task: "Walk",
     description: "Walk 4 Kms, exercise 20 minutes",
     isCompleted: false,
     id: "aksjdlaskjdlsd",
+    priority: 4,
   },
 ];
 
@@ -23,13 +25,14 @@ const schema = buildSchema(`
         task: String!
         description: String!
         isCompleted: Boolean!
+        priority: Int!
         id:ID!
     }
     type Query {
         todoList: [TodoItem!]
     }
     type Mutation {
-        createTodo(task:String!, description:String!, isCompleted: Boolean!): TodoItem!
+        createTodo(task:String!, description:String!, isCompleted: Boolean!, priority:Int!): TodoItem!
         removeTodo(taskId:ID!):ID!
         updateTaskStatus(taskId:ID!):ID!
     }
@@ -37,13 +40,16 @@ const schema = buildSchema(`
 
 const root = {
   todoList: () => {
-    return todo;
+    const sortedTodo = todo.sort(
+      (todo1, todo2) => todo2.priority - todo1.priority
+    );
+    return sortedTodo;
   },
   createTodo: (parent, args) => {
-    const { task, description, isCompleted } = parent;
+    const { task, description, isCompleted, priority } = parent;
     let id = String(Math.random() * 4 - 1);
-    todo.push({ task, description, isCompleted, id });
-    return { task, description, isCompleted, id };
+    todo.push({ task, description, isCompleted, id, priority });
+    return { task, description, isCompleted, id, priority };
   },
   removeTodo: (parent) => {
     const { taskId } = parent;
