@@ -20,7 +20,7 @@ function TodoForm() {
 
   return (
     <>
-      <div class="mx-5">
+      <div class="col-12 col-lg-10 mx-auto">
         <h1 style={{ marginTop: "20%", fontWeight: "bold", color: "white" }}>
           Add Todo
         </h1>

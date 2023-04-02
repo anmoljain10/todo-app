@@ -12,7 +12,7 @@ function App() {
             height: "100vh",
           }}
         >
-          <Col className="animated-background">
+          <Col lg={6} className="animated-background">
             <TodoForm />
           </Col>
           <Col className="px-5 py-4">
