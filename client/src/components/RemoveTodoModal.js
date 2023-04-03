@@ -7,7 +7,7 @@ const RemoveTodoModal = (props) => {
         <Modal.Title>Remove Task</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>Are you sure you want to remove this task?</p>
+        <p>Are you sure you want to remove the task?</p>
         <Button onClick={props.closeModal}>Cancel</Button>
         <Button className="mx-3" variant="danger" onClick={props.onRemove}>
           Remove
