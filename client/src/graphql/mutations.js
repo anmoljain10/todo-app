@@ -34,4 +34,19 @@ const UPDATE_TASK_STATUS = gql`
   }
 `;
 
-export { CREATE_TODO, REMOVE_TODO, UPDATE_TASK_STATUS };
+const UPDATE_TASK_DETAILS = gql`
+  mutation updateTaskDetails(
+    $taskId: ID!
+    $task: String!
+    $description: String!
+  ) {
+    updateTaskDetails(taskId: $taskId, task: $task, description: $description) {
+      task
+      description
+      id
+      isCompleted
+    }
+  }
+`;
+
+export { CREATE_TODO, REMOVE_TODO, UPDATE_TASK_STATUS, UPDATE_TASK_DETAILS };

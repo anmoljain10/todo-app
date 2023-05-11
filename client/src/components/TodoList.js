@@ -4,14 +4,17 @@ import {
   Placeholder,
   Form,
   CloseButton,
+  Button,
 } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RemoveTodoModal from "./RemoveTodoModal";
 import { GET_TODOS } from "../graphql/queries";
 import { useQuery, useMutation } from "@apollo/client";
 import { REMOVE_TODO, UPDATE_TASK_STATUS } from "../graphql/mutations";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 
-function TodoList() {
+function TodoList(props) {
   const placeholderSkeletons = [
     "placeholder 1",
     "placeholder 2",
@@ -88,6 +91,19 @@ function TodoList() {
                     setTodoModalVisibility(true);
                   }}
                 ></CloseButton>
+                <FontAwesomeIcon
+                  icon={faEdit}
+                  onClick={() =>
+                    props.onTodoUpdateClick({ id, task, description })
+                  }
+                  style={{
+                    position: "absolute",
+                    top: 15,
+                    right: 50,
+                    cursor: "pointer",
+                  }}
+                />
+
                 <div class="d-flex align-items-start">
                   <div>
                     <Form.Check

@@ -28,6 +28,7 @@ const schema = buildSchema(`
         priority: Int!
         id:ID!
     }
+
     type Query {
         todoList: [TodoItem!]
     }
@@ -35,6 +36,7 @@ const schema = buildSchema(`
         createTodo(task:String!, description:String!, isCompleted: Boolean!, priority:Int!): TodoItem!
         removeTodo(taskId:ID!):ID!
         updateTaskStatus(taskId:ID!):ID!
+        updateTaskDetails(taskId: ID!, task: String!, description: String!): TodoItem!
     }
 `);
 
@@ -66,6 +68,19 @@ const root = {
       return taskId;
     } catch (e) {
       console.log(e, "error");
+    }
+  },
+  updateTaskDetails: (todoItem) => {
+    const { taskId, task, description } = todoItem;
+    const taskIndex = todo.findIndex((task) => task.id === taskId);
+    try {
+      if (taskId && taskIndex !== -1) {
+        todo[taskIndex].task = task;
+        todo[taskIndex].description = description;
+      }
+      return todo[taskIndex];
+    } catch (e) {
+      return todo[taskIndex];
     }
   },
 };
