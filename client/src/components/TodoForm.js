@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Form, Spinner, Card } from "react-bootstrap";
 import { CREATE_TODO } from "../graphql/mutations";
 import { GET_TODOS } from "../graphql/queries";
 import { useMutation } from "@apollo/client";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function TodoForm() {
   const [task, setTask] = useState("");
@@ -18,12 +20,36 @@ function TodoForm() {
     setSliderValue(slideValue);
   }
 
+  useEffect(() => {
+    if (data) {
+      console.log("added")
+      makeToast('Todo Added successfully!')
+    }
+  }, [data])
+
+  const makeToast = useCallback((data) => {
+    toast(data)
+  }, [data])
+
+
   return (
     <>
       <div class="col-12 col-lg-10 mx-auto">
         <h1 style={{ marginTop: "20%", fontWeight: "bold", color: "white" }}>
           Add Todo
         </h1>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <Card
           style={{
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -42,6 +68,7 @@ function TodoForm() {
                   priority: sliderValue,
                 },
               });
+
               setTask("");
               setDescription("");
               setSliderValue(0);
@@ -83,8 +110,8 @@ function TodoForm() {
                   sliderValue <= 2
                     ? "#33ccff"
                     : sliderValue <= 4
-                    ? "#ffc34d"
-                    : "#ff6666",
+                      ? "#ffc34d"
+                      : "#ff6666",
               }}
               handleStyle={{ height: 25, width: 25 }}
               onChange={onSliderValueChange}

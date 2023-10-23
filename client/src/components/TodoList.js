@@ -5,6 +5,7 @@ import {
   Form,
   CloseButton,
   Button,
+  Alert,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RemoveTodoModal from "./RemoveTodoModal";
@@ -13,6 +14,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import { REMOVE_TODO, UPDATE_TASK_STATUS } from "../graphql/mutations";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function TodoList(props) {
   const placeholderSkeletons = [
@@ -24,6 +27,11 @@ function TodoList(props) {
   const [removeTodoModalVisible, setTodoModalVisibility] = useState(false);
   const [removeTodoId, setRemoveTodoId] = useState(null);
   const { loading, error, data } = useQuery(GET_TODOS);
+  const completedTodos = data?.todoList.reduce((acc, value) => {
+    return value.isCompleted === true ? acc + 1 : acc
+  }, 0);
+
+
   const [removeTodo, removeResponse] = useMutation(REMOVE_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
   });
@@ -58,6 +66,7 @@ function TodoList(props) {
 
   return (
     <>
+      <div className="mb-3">Completed Tasks: {completedTodos}</div>
       {loading &&
         placeholderSkeletons.map(() => {
           return (
@@ -77,10 +86,10 @@ function TodoList(props) {
                   isCompleted
                     ? "success"
                     : priority <= 2
-                    ? "info"
-                    : priority <= 4
-                    ? "warning"
-                    : "danger"
+                      ? "info"
+                      : priority <= 4
+                        ? "warning"
+                        : "danger"
                 }
               >
                 <CloseButton
@@ -91,10 +100,28 @@ function TodoList(props) {
                     setTodoModalVisibility(true);
                   }}
                 ></CloseButton>
+                <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
                 <FontAwesomeIcon
                   icon={faEdit}
-                  onClick={() =>
+
+                  onClick={() => {
+                    if (isCompleted) {
+                      toast("Task is already complete")
+                      return
+                    }
                     props.onTodoUpdateClick({ id, task, description })
+                  }
                   }
                   style={{
                     position: "absolute",
